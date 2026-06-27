@@ -96,5 +96,45 @@ namespace AshenCore.Core
         void UnloadAsset(AssetHandle handle);
         UniTask<long> GetSizeAsync(AssetHandle handle);
     }
+
+
+    public interface IACPersistenceSystem
+    {
+
+        public void Initialize();
+        public ACSaveSystemType GetSaveSystemType();
+
+        ACSaveService GetSaveService();
+
+        ACSlot GetSlot(int slotId);
+        int GetNextFreeSlotId(List<ACSaveMetaData> metas);
+        public ACSlot GetCurrentSlot();
+
+        //GLOBAL DATA
+        List<ACSaveMetaData> GetAllSaves();
+        List<ACSlot> GetAllSlots();
+        bool HasSave(int slot);
+
+        UniTask<ACSlot> CreateNewSave();
+        UniTask<SaveResult> SaveAsync(int slot);
+        UniTask<LoadResult> LoadAsync(int slot);
+        UniTask<bool> DeleteAsync(int slotId);
+
+        //SCENE DATA
+        UniTask<LoadResult> LoadSceneData(int sceneId);
+        UniTask<SaveResult> SaveSceneData(int sceneId);
+        UniTask<bool> DeleteSceneData(int sceneId);
+
+    }
+    
+        public interface IUIService
+    {
+        GUIHelper OpenWindow<T>();
+        GUIHelper CloseWindow<T>();
+        GUIHelper RemoveWindow<T>();
+        List<string> GetRegisteredUIs();
+        void Initialize();
+        ACIconDefinition GetIcon(string iconId);
+    }
     
 }

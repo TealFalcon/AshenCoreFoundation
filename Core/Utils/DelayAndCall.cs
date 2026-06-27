@@ -11,7 +11,6 @@ public class DelayAndCall : MonoBehaviour
     public bool _isLoaded = false;
 
     private ACSceneManager _sceneManager;
-    private ACSpawnerService _spawnerService;
     private IACPersistenceSystem _persistenceSystem;
 
     private AshenCoreServices _services;
