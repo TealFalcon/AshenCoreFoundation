@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
+using TMPro;
 
 namespace AshenCore.Core
 {
@@ -167,5 +168,38 @@ namespace AshenCore.Core
         }
 
 
+    }
+
+    public class UIThemeManager
+    {
+        public UITheme CurrentTheme;
+
+        private readonly List<IUIThemeListener> listeners = new();
+
+        public void Register(IUIThemeListener listener)
+        {
+            if (!listeners.Contains(listener))
+                listeners.Add(listener);
+        }
+
+        public void Unregister(IUIThemeListener listener)
+        {
+            listeners.Remove(listener);
+        }
+
+        public void SetTheme(UITheme newTheme)
+        {
+            CurrentTheme = newTheme;
+
+            foreach (var l in listeners)
+            {
+                l.ApplyTheme(newTheme);
+            }
+        }
+    }
+    
+        public interface IUIThemeListener
+    {
+        void ApplyTheme(UITheme theme);
     }
 }
