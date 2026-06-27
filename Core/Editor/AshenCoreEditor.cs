@@ -29,14 +29,9 @@ namespace AshenCore.Core
 
     }
 
-    [CustomEditor(typeof(ACAudioService))]
-    public class ACAudioServiceEditor : AshenCoreEditor { }
     [CustomEditor(typeof(ACEventService))]
     public class ACEventServiceEditor : AshenCoreEditor { }
-    [CustomEditor(typeof(ACFadeService))]
-    public class ACFadeServiceEditor : AshenCoreEditor { }
-    [CustomEditor(typeof(ACSpawnerService))]
-    public class ACSpawnerServiceEditor : AshenCoreEditor { }
+
     [CustomEditor(typeof(ACSceneManager))]
     public class ACSceneManagerEditor : AshenCoreEditor { }
 
@@ -123,7 +118,7 @@ namespace AshenCore.Core
 
     }
     
-        [CustomEditor(typeof(ACLocalSystem))]
+/*         [CustomEditor(typeof(ACLocalSystem))]
         public class ACLocalSystemEditor : AshenCoreEditor
         {
             public override void OnInspectorGUI()
@@ -154,6 +149,6 @@ namespace AshenCore.Core
                     GUILayout.Label($"{p.Key} → {p.Value.GetType().Name}");
                 }
             }
-        }
+        } */
 
 }
