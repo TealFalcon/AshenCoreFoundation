@@ -82,12 +82,51 @@ namespace AshenCore.Core
         public bool PreserveAspect = true;
     }
 
-    [Serializable]    
+    [Serializable]
     public class ACPool
     {
         public int Id;
         public GameObject Prefab;
         public List<ACSpawnHandle> GameObjects;
+    }
+
+    public enum ACSpawnContainerType
+    {
+        System,
+        World,
+        Props,
+        FX,
+        UI,
+        Projectiles
+    }
+
+    public enum ACUILayers
+    {
+        Background = 0,
+        Screen = 1,
+        Popup = 2,
+        Overlay = 3
+    }
+
+    public struct ACInputEvent
+    {
+        public string Action;
+        public ACInputPhase Phase;
+        public object Value;
+    }
+
+    public enum ACInputPhase
+    {
+        Pressed,
+        Held,
+        Released
+    }
+
+        public enum ACWindowState
+    {
+        Opened = 0,
+        Closed = 1,
+        Destroyed = 2
     }
 
 
