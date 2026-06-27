@@ -70,7 +70,7 @@ public class DelayAndCall : MonoBehaviour
                     });
                 } */
 
-                GUIHelper test = _services.UI.OpenWindow<InputDialog>();
+/*                 GUIHelper test = _services.UI.OpenWindow<InputDialog>();
                 if (test.windowComponent is InputDialog gui)
                     gui.Setup("Aceptar",
                     (value) => {
@@ -82,7 +82,7 @@ public class DelayAndCall : MonoBehaviour
                         _services.Debug.Log("Cancelado", ConsoleMessageType.Info);
                         _services.UI.CloseWindow<InputDialog>();
                     },"Inserte el nombre de su prima.","^[a-zA-Z ]+$");
-
+ */
 
             }
 
