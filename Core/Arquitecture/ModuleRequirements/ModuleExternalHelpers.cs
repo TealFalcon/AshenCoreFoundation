@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.AddressableAssets;
+using UnityEngine.UI;
 
 namespace AshenCore.Core
 {
@@ -129,5 +130,42 @@ namespace AshenCore.Core
         Destroyed = 2
     }
 
+    public enum AudioChannel
+    {
+        SFX,
+        Music
+    }
 
+    public abstract class ACUIWindow : AshenObject
+    {
+        public virtual void OnCreate() { }
+        public virtual void OnOpen() { }
+        public virtual void OnClose() { }
+        public virtual void OnDestroyWindow() { }
+        public virtual void SetTheme(UIThemeManager themeManager) { }
+
+        public List<Button> PositiveButtons = new List<Button>();
+        public List<Button> NegativeButtons = new List<Button>();
+        public List<Button> OtherButtons = new List<Button>();
+        public List<TMP_Text> Labels = new List<TMP_Text>();
+        public List<TMP_Text> Descriptions = new List<TMP_Text>();
+        public List<TMP_Text> Titles = new List<TMP_Text>();
+        public List<Image> Windows = new List<Image>();
+        public List<TMP_InputField> InputFields = new List<TMP_InputField>();
+
+        public void ApplyTheme(UITheme Theme)
+        {
+            foreach (Image w in Windows) UIThemeApplicator.ApplyThemeWindow(w, Theme);
+            foreach (Button b in PositiveButtons) UIThemeApplicator.ApplyThemeOkButton(b, Theme);
+            foreach (Button b in NegativeButtons) UIThemeApplicator.ApplyThemeCancelButton(b, Theme);
+            foreach (Button b in OtherButtons) UIThemeApplicator.ApplyThemeOtherButton(b, Theme);
+            foreach (TMP_Text l in Labels) UIThemeApplicator.ApplyThemePrimaryText(l, Theme);
+            foreach (TMP_Text l in Descriptions) UIThemeApplicator.ApplyThemeSecondaryText(l, Theme);
+            foreach (TMP_Text l in Titles) UIThemeApplicator.ApplyThemeTitleText(l, Theme);
+            foreach (TMP_InputField l in InputFields) UIThemeApplicator.ApplyThemeInputText(l, Theme);
+
+        }
+
+
+    }
 }
