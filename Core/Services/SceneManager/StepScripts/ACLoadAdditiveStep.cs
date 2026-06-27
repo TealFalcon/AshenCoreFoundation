@@ -48,6 +48,8 @@ namespace AshenCore.Core
             {
                 sceneContext.debugSystem.Log("[ASHEN CORE] Addressable Scene " + sceneDefinition.Alias + " loading...", ConsoleMessageType.Verbose);
 
+                sceneContext.SceneManager.FireOnSceneChanged(sceneDefinition);
+
                 var op = Addressables.LoadSceneAsync(sceneDefinition.SceneAsset, LoadSceneMode.Additive);
 
                 await op.ToUniTask();
@@ -57,6 +59,8 @@ namespace AshenCore.Core
             else
             {
                 sceneContext.debugSystem.Log("[ASHEN CORE] Built-in Scene " + sceneDefinition.Alias + " loading...", ConsoleMessageType.Verbose);
+                
+                sceneContext.SceneManager.FireOnSceneChanged(sceneDefinition);
 
                 var op = SceneManager.LoadSceneAsync(sceneDefinition.SceneId, LoadSceneMode.Additive);
 

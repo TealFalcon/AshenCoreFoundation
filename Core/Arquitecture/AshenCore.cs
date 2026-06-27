@@ -16,14 +16,15 @@ namespace AshenCore.Core
         }
 
         public ILog Debug => TryGet<ILog>();
-        public ACAudioService Audio => TryGet<ACAudioService>();
-        public ACEventService Events => TryGet<ACEventService>();
-        public ACSceneManager Scenes => TryGet<ACSceneManager>();
-        public ACFadeService Fade => TryGet<ACFadeService>();
-        public ACSpawnerService Spawner => TryGet<ACSpawnerService>();
-        public ACInputSystem Input => TryGet<ACInputSystem>();
-        public IACPersistenceSystem Persistence => TryGet<IACPersistenceSystem>();
-        public ACResourcesService Resources => TryGet<ACResourcesService>();
+        public IAudioService Audio => TryGet<IAudioService>();  //Done
+        public ACEventService Events => TryGet<ACEventService>(); //Done
+        public ACSceneManager Scenes => TryGet<ACSceneManager>(); //Done
+        public IACFeedbackService Feedback => TryGet<IACFeedbackService>(); //Done
+        public ISpawnerService Spawner => TryGet<ISpawnerService>(); //Done
+        public IACInputSystem Input => TryGet<IACInputSystem>();
+        public IACPersistenceSystem Persistence => TryGet<IACPersistenceSystem>();  //Done
+        public IResourcesService Resources => TryGet<IResourcesService>();
+        public IUIService UI => TryGet<IUIService>(); //Done
 
         private T TryGet<T>() where T : class
         {
@@ -35,27 +36,25 @@ namespace AshenCore.Core
 
     public class AshenCore : LifetimeScope
     {
-        [Header("Log System")]
+        private IContainerBuilder _builder;
+        
+        [Header("Core Systems")]
         [SerializeField] private ACDebugSystem _ACLogSystem;
-
-        [Header("Services")]
-        [SerializeField] private ACAudioService _audioService;
         [SerializeField] private ACEventService _eventService;
         [SerializeField] private ACSceneManager _sceneManager;
-        [SerializeField] private ACFadeService _fadeService;
-        [SerializeField] private ACSpawnerService _spawnerService;
-        [SerializeField] private ACInputSystem _inputSystem;
-        
 
         private AshenCoreServices _ashenCoreServices;
 
-        private List<string> registeredServices = new List<string>();
+        private List<IAshenModule> modules = new List<IAshenModule>();
 
+        private List<string> registeredServices = new List<string>();
 
         protected override void Configure(IContainerBuilder builder)
         {
 
             Debug.Log("[ASHEN CORE] Registering Ashen Core Services...");
+
+            _builder = builder;
 
             // *************************************************************
             //                         SYSTEMS
@@ -66,15 +65,19 @@ namespace AshenCore.Core
             else
                 builder.Register<UnityLogSystem>(Lifetime.Singleton).As<ILog>();
 
-            InterfaceRegistration<IACPersistenceSystem>(builder, "Persistence System");
+            OServiceRegistration<ACEventService>(_eventService, "Event Receiver");
+            OServiceRegistration<ACSceneManager>(_sceneManager, "Scene Manager");
 
-            OServiceRegistration<ACAudioService>(builder, _audioService, "Audio Service");
-            OServiceRegistration<ACEventService>(builder, _eventService, "Event Receiver");
-            OServiceRegistration<ACSceneManager>(builder, _sceneManager, "Scene Manager");
-            OServiceRegistration<ACFadeService>(builder, _fadeService, "Fade Service");
-            OServiceRegistration<ACSpawnerService>(builder, _spawnerService, "Spawner Service");
-            OServiceRegistration<ACInputSystem>(builder, _inputSystem, "Input System");
-            ServiceRegistration<ACResourcesService>(builder, "Resources Service");
+            // *************************************************************
+            //                        CORE MODULES
+            // *************************************************************
+
+            modules = AshenCoreFind.FindInterfaces<IAshenModule>(false);
+            
+            foreach (var module in modules)
+            {
+                module.Register(this);
+            }
 
             //Registering a wrapper with all Services
             builder.Register(resolver =>
@@ -84,18 +87,22 @@ namespace AshenCore.Core
 
 
             // *************************************************************
-            //                          MODULES
+            //                          SHARDS
             // *************************************************************
+
+
+
             builder.RegisterInstance(registeredServices);
             builder.RegisterEntryPoint<Bootstrap>();
         }
 
-        void OServiceRegistration<T>(IContainerBuilder builder, T service, string serviceName) where T : class
+        
+        public void OServiceRegistration<T>(T service, string serviceName) where T : class
         {
 
             if (service != null)
             {
-                builder.RegisterComponent(service);
+                _builder.RegisterComponent(service);
                 Debug.Log("[ASHEN CORE] " + serviceName + " service registered");
                 registeredServices.Add(serviceName);
             }
@@ -106,19 +113,19 @@ namespace AshenCore.Core
 
         }
 
-        void ServiceRegistration<T>(IContainerBuilder builder, string serviceName) where T : class
+        public void ServiceRegistration<T>(string serviceName) where T : class
         {
 
-            builder.Register<T>(Lifetime.Singleton);
+            _builder.Register<T>(Lifetime.Singleton);
             registeredServices.Add(serviceName);
             Debug.Log("[ASHEN CORE] " + serviceName + " service registered");
 
         }
 
-        void InterfaceRegistration<T>(IContainerBuilder builder, string serviceName) where T : class
+        public void InterfaceRegistration<T>(string serviceName) where T : class
         {
 
-            builder.RegisterComponentInHierarchy<T>().As<T>();
+            _builder.RegisterComponentInHierarchy<T>().As<T>();
             registeredServices.Add(serviceName);
             Debug.Log("[ASHEN CORE] " + serviceName + " interface system registered");
 
@@ -135,9 +142,10 @@ namespace AshenCore.Core
         {
             Log = services.Debug;
             Services = services;
-            Log.SetRegisteredServices(registeredservices); 
-            
+            Log.SetRegisteredServices(registeredservices);
+
             Log.Log("[ASHEN CORE] Registering Event Drivers", ConsoleMessageType.Info);
+            
             if (services.Events != null)
             {
                 var drivers = AshenCoreFind.FindAll<ACDriver>(false);
@@ -168,6 +176,7 @@ namespace AshenCore.Core
         {
             Log?.Log("¡[ASHEN CORE] Ashen Core Initialized!", ConsoleMessageType.Info);
             Services.Persistence?.Initialize();
+            Services.UI?.Initialize();
         }
     }
 }

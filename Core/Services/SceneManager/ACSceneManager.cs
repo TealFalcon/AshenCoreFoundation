@@ -42,7 +42,8 @@ namespace AshenCore.Core
         public ACSceneDefinition LastScene;
         public ACSceneDefinition CurrentScene;
         public IACSceneHandle CurrentSceneHandle;
-
+        public event Action<ACSceneDefinition> OnSceneChanged;
+        
         public SceneData currentSceneData = new SceneData();
         public ILog Log;
 
@@ -52,7 +53,7 @@ namespace AshenCore.Core
 
             _sceneContext.audioService = services.Audio;
             _sceneContext.eventService = services.Events;
-            _sceneContext.fadeService = services.Fade;
+            _sceneContext.feedbackService = services.Feedback;
             _sceneContext.spawnerService = services.Spawner;
             _sceneContext.debugSystem = services.Debug;
             _sceneContext.SceneManager = this;
@@ -87,6 +88,7 @@ namespace AshenCore.Core
                 Log?.Log("[ASHEN CORE] Scene " + sceneId + " not found", ConsoleMessageType.Error);
                 return;
             }
+
 
             Log?.Log("[ASHEN CORE] Loading " + sceneDefinition.Alias, ConsoleMessageType.Info);
 
@@ -148,19 +150,23 @@ namespace AshenCore.Core
             return sceneDefinitions;
         }
 
+        public void FireOnSceneChanged(ACSceneDefinition sceneDefinition)
+        {
+            OnSceneChanged?.Invoke(sceneDefinition);
+        }
 
 
     }
 
     public class ACSceneContext
     {
-        public ACAudioService audioService;
+        public IAudioService audioService;
         public ACEventService eventService;
-        public ACFadeService fadeService;
-        public ACSpawnerService spawnerService;
+        public IACFeedbackService feedbackService;
+        public ISpawnerService spawnerService;
         public ILog debugSystem;
         public ACSceneManager SceneManager;
-        public ACResourcesService resourcesService;
+        public IResourcesService resourcesService;
         public IACPersistenceSystem persistenceService;
     }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using VContainer;
 
 namespace AshenCore.Core
 {
@@ -8,6 +9,30 @@ namespace AshenCore.Core
     {
         GUIConsoleController _controller;
         List<string> registeredServices;
+        public bool debugMode;
+        ACSceneManager _sceneManager;
+        GameObject debugCamera;
+
+        [Inject]
+        void Construct(AshenCoreServices _services)
+        {
+            _sceneManager = _services.Scenes;
+            _sceneManager.OnSceneChanged += OnSceneChanged;
+        }
+
+        void OnSceneChanged(ACSceneDefinition sceneDefinition)
+        {
+            if (sceneDefinition.SceneType == ACSceneType.Game)
+            {
+                debugCamera.SetActive(false);
+            }
+        }
+
+        public void SetDebugCamera(GameObject camera) { debugCamera = camera; }
+
+
+        public bool GetDebugMode() { return debugMode; }
+ 
         public void Log(string message)
         {
             Debug.Log(message);

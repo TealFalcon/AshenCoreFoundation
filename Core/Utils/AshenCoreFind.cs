@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AshenCore.Core
@@ -15,9 +17,24 @@ namespace AshenCore.Core
             );
 #else
             return Object.FindObjectsOfType<T>(includeInactive);
-    #endif
+#endif
         }
+
+        public static List<T> FindInterfaces<T>(bool includeInactive = true) where T : class
+        {
+            var behaviours = Object.FindObjectsByType<MonoBehaviour>(
+                includeInactive ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+
+            return behaviours
+                .OfType<T>()
+                .ToList();
+        }
+        
 #pragma warning restore CS0618
     }
+    
+    
     
 }

@@ -395,6 +395,38 @@ namespace AshenCore.Core
             return "";
         }
     }
+
+    public class UIListCommand : IConsoleCommand
+    {
+
+        public string Command => "listUIS";
+        private readonly ILog Log;
+        private IUIService UI;
+
+        public UIListCommand(
+            ILog debugSystem,
+            IUIService _UI)
+        {
+            Log = debugSystem;
+            UI = _UI;
+        }
+
+        public async UniTask<string> Execute(string[] args)
+        {
+            Log.Log("UIs:");
+            if (UI == null) return "UI Service not found.";
+            if (UI.GetRegisteredUIs() == null) return "No UIs registered.";
+            if(UI.GetRegisteredUIs().Count == 0) return "No UIs registered.";
+            
+            foreach (string c in UI.GetRegisteredUIs())
+            {
+                Log.Log(c);
+            }
+            await UniTask.CompletedTask;
+            return "";
+        }
+    }
+    
     
     public class GaussCommand : IConsoleCommand
     {

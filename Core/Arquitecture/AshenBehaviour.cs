@@ -33,7 +33,6 @@ namespace AshenCore.Core
 
     public class AshenBehaviour : MonoBehaviour, IPoolable
     {
-        private ACAudioService _audioService;
 
         private int _id;
 
@@ -91,8 +90,6 @@ namespace AshenCore.Core
         [Inject]
         public void Construct(AshenCoreServices services)
         {
-            _audioService = services.Audio;
-
 
         }
 

@@ -14,7 +14,7 @@ namespace AshenCore.Core
     public class GUIConsoleController : MonoBehaviour
     {
         private ILog _debugSystem;
-        private ACInputSystem _input;
+        private IACInputSystem _input;
         private ACSceneManager _sceneManager;
         private IACPersistenceSystem _persistenceSystem;
 
@@ -76,7 +76,7 @@ namespace AshenCore.Core
             _commandRegistry.Register(this,new SaveSceneCommand(_persistenceSystem, _debugSystem, _sceneManager));
             _commandRegistry.Register(this, new ListServicesCommand(_debugSystem));
             _commandRegistry.Register(this, new GaussCommand(_debugSystem));
-
+            _commandRegistry.Register(this, new UIListCommand(_debugSystem,services.UI));
         }
 
         void Start()
@@ -140,7 +140,7 @@ namespace AshenCore.Core
             string command = _inputField.text;
 
             AddMessage("> " + command);
-            _inputHistory = _inputHistory.Append(command).ToArray();
+            _inputHistory = _inputHistory?.Append(command).ToArray();
             AddMessage(await _commandRegistry.Execute(command));
 
             _inputField.text = "";

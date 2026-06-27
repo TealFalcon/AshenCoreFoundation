@@ -342,7 +342,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 32767
+  m_SortingOrder: 5001
   m_TargetDisplay: 0
 --- !u!224 &400354094
 RectTransform:
@@ -387,6 +387,8 @@ MonoBehaviour:
   errorColor: {r: 0.8679245, g: 0.36436453, b: 0.36436453, a: 1}
   exceptionColor: {r: 1, g: 0, b: 1, a: 1}
   criticalColor: {r: 1, g: 0.051886797, b: 0.051886797, a: 1}
+  inputColor: {r: 0.6470588, g: 0.1647059, b: 0.1647059, a: 1}
+  registeredCommands: []
 --- !u!1 &450247623
 GameObject:
   m_ObjectHideFlags: 0

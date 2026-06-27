@@ -5,17 +5,6 @@ using System.Collections.Generic;
 namespace AshenCore.Core
 {
 
-/*     public enum ConsoleMessageType
-    {
-        Verbose,
-        Info,
-        Warning,
-        Error,
-        Exception,
-        Critical,
-        Input
-    } */
-
     [System.Flags]
     public enum ConsoleMessageType
     {
@@ -29,20 +18,7 @@ namespace AshenCore.Core
         Input       = 1 << 6
     }
 
-    public interface ILog
-    {
-        void Log(string message);
-        void Log(string message, ConsoleMessageType type);
-        void Warn(string message);
-        void Error(string message);
-        void SetGUI(GUIConsoleController controller);
-        void InitializeGUI();
-        bool UseGUI();
-        void ClearGUI();
-        void SetVariable(string varName, string varValue);
-        void SetRegisteredServices(List<string> registeredServices);
-        List<string> GetRegisteredServices();
-    }
+    
 
     public class ACDebugSystem : MonoBehaviour, ILog
     {
@@ -53,13 +29,29 @@ namespace AshenCore.Core
         public bool useGUI;
         public ConsoleMessageType filter;
         public List<string> registeredServices;
+        public bool debugMode;
+        public GameObject debugCamera;
 
 
         [Inject]
         void Construct(AshenCoreServices _services)
         {
             _sceneManager = _services.Scenes;
+            _sceneManager.OnSceneChanged += OnSceneChanged;
         }
+
+        void OnSceneChanged(ACSceneDefinition sceneDefinition)
+        {
+            if (sceneDefinition.SceneType == ACSceneType.Game)
+            {
+                debugCamera.SetActive(false);
+            }
+        }
+
+        public void SetDebugCamera(GameObject camera) { debugCamera = camera; }
+
+
+        public bool GetDebugMode() { return debugMode; }
 
         public void SetRegisteredServices(List<string> registeredServices)
         {

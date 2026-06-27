@@ -7,7 +7,7 @@ namespace AshenCore.Core
 {
     public class ACAudioDriver : ACDriver, IACDriver
     {
-        private ACAudioService _audioService;
+        private IAudioService _audioService;
 
         [Inject]
         void Construct(AshenCoreServices services)
