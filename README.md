@@ -45,7 +45,7 @@ git clone https://github.com/TealFalcon/AshenCoreFoundation.git
 
 ➤ Add submodule
 
-git submodule add https://github.com/TealFalcon/AshenCoreFoundation.git Assets/AshenCoreFoundation
+git submodule add https://github.com/TealFalcon/AshenCoreFoundation.git Assets/AshenCore
 
 ➤ Initialize / update submodule
 
